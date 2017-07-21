@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import * as rimrafPackage from 'rimraf';
+import * as fs from 'fs-extra';
 import {dirname} from 'path';
 import {stripIndents} from 'common-tags';
 
@@ -44,14 +43,14 @@ export function deleteFile(path: string) {
 
 export function rimraf(path: string) {
   return new Promise<void>((resolve, reject) => {
-    rimrafPackage(path, (err?: any) => {
+    fs.remove(path, (err?: any) => {
       if (err) {
         reject(err);
       } else {
         resolve();
       }
-    })
-  }
+    });
+  });
 }
 
 
@@ -81,11 +80,11 @@ export function symlinkFile(from: string, to: string, type?: string) {
 }
 
 export function createDir(path: string) {
-  _recursiveMkDir(path);
+  return _recursiveMkDir(path);
 }
 
 
-function _recursiveMkDir(path: string) {
+function _recursiveMkDir(path: string): Promise<void> {
   if (fs.existsSync(path)) {
     return Promise.resolve();
   } else {
@@ -98,11 +97,11 @@ export function copyFile(from: string, to: string) {
   return _recursiveMkDir(dirname(to))
     .then(() => new Promise((resolve, reject) => {
       const rd = fs.createReadStream(from);
-      rd.on('error', (err) => reject(err));
+      rd.on('error', (err: Error) => reject(err));
 
       const wr = fs.createWriteStream(to);
-      wr.on('error', (err) => reject(err));
-      wr.on('close', (ex) => resolve());
+      wr.on('error', (err: Error) => reject(err));
+      wr.on('close', () => resolve());
 
       rd.pipe(wr);
     }));
@@ -114,8 +113,7 @@ export function writeMultipleFiles(fs: { [path: string]: string }) {
 }
 
 
-export function replaceInFile(filePath: string, match: string, replacement: string);
-export function replaceInFile(filePath: string, match: RegExp, replacement: string) {
+export function replaceInFile(filePath: string, match: RegExp | string, replacement: string) {
   return readFile(filePath)
     .then((content: string) => writeFile(filePath, content.replace(match, replacement)));
 }

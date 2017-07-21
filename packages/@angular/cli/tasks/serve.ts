@@ -1,7 +1,6 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as chalk from 'chalk';
-import * as rimraf from 'rimraf';
 import * as webpack from 'webpack';
 import * as url from 'url';
 import { oneLine, stripIndents } from 'common-tags';
@@ -32,8 +31,11 @@ export default Task.extend({
     if (projectConfig.project && projectConfig.project.ejected) {
       throw new SilentError('An ejected project cannot use the build command anymore.');
     }
+    if (appConfig.platform === 'server') {
+      throw new SilentError('ng serve for platform server applications is coming soon!');
+    }
     if (serveTaskOptions.deleteOutputPath) {
-      rimraf.sync(path.resolve(this.project.root, outputPath));
+      fs.removeSync(path.resolve(this.project.root, outputPath));
     }
 
     const serveDefaults = {

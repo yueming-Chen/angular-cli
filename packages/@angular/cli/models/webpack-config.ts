@@ -7,6 +7,7 @@ import {
   getDevConfig,
   getProdConfig,
   getStylesConfig,
+  getServerConfig,
   getNonAotConfig,
   getAotConfig
 } from './webpack-configs';
@@ -37,9 +38,12 @@ export class NgCliWebpackConfig {
   }
 
   public buildConfig() {
+    const platformConfig = this.wco.appConfig.platform === 'server' ?
+      getServerConfig(this.wco) : getBrowserConfig(this.wco);
+
     let webpackConfigs = [
       getCommonConfig(this.wco),
-      getBrowserConfig(this.wco),
+      platformConfig,
       getStylesConfig(this.wco),
       this.getTargetConfig(this.wco)
     ];
@@ -70,6 +74,11 @@ export class NgCliWebpackConfig {
     if (buildOptions.target !== 'development' && buildOptions.target !== 'production') {
       throw new Error("Invalid build target. Only 'development' and 'production' are available.");
     }
+
+    if (buildOptions.buildOptimizer
+      && !(buildOptions.aot || buildOptions.target === 'production')) {
+      throw new Error('The `--build-optimizer` option cannot be used without `--aot`.');
+    }
   }
 
   // Fill in defaults for build targets
@@ -79,13 +88,16 @@ export class NgCliWebpackConfig {
         environment: 'dev',
         outputHashing: 'media',
         sourcemaps: true,
-        extractCss: false
+        extractCss: false,
+        namedChunks: true,
+        aot: false
       },
       production: {
         environment: 'prod',
         outputHashing: 'all',
         sourcemaps: false,
         extractCss: true,
+        namedChunks: false,
         aot: true
       }
     };

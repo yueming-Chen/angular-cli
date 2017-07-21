@@ -1,6 +1,7 @@
 import * as webpack from 'webpack';
 import * as path from 'path';
 import { GlobCopyWebpackPlugin } from '../../plugins/glob-copy-webpack-plugin';
+import { NamedLazyChunksWebpackPlugin } from '../../plugins/named-lazy-chunks-webpack-plugin';
 import { extraEntryParser, getOutputHashFormat } from './utils';
 import { WebpackConfigOptions } from '../webpack-config';
 
@@ -18,6 +19,7 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
  * require('json-loader')
  * require('url-loader')
  * require('file-loader')
+ * require('@angular-devkit/build-optimizer')
  */
 
 export function getCommonConfig(wco: WebpackConfigOptions) {
@@ -64,19 +66,24 @@ export function getCommonConfig(wco: WebpackConfigOptions) {
     extraPlugins.push(new ProgressPlugin({ profile: buildOptions.verbose, colors: true }));
   }
 
-  if (buildOptions.sourcemaps) {
-    extraPlugins.push(new webpack.SourceMapDevToolPlugin({
-      filename: '[file].map[query]',
-      moduleFilenameTemplate: '[resource-path]',
-      fallbackModuleFilenameTemplate: '[resource-path]?[hash]',
-      sourceRoot: 'webpack:///'
-    }));
-  }
-
-  if (!appConfig.hideCircularDependencyWarnings) {
+  if (buildOptions.showCircularDependencies) {
     extraPlugins.push(new CircularDependencyPlugin({
       exclude: /(\\|\/)node_modules(\\|\/)/
     }));
+  }
+
+  if (buildOptions.buildOptimizer) {
+    extraRules.push({
+      test: /\.js$/,
+      use: [{
+        loader: '@angular-devkit/build-optimizer/webpack-loader',
+        options: { sourceMap: buildOptions.sourcemaps }
+      }]
+    });
+  }
+
+  if (buildOptions.namedChunks) {
+    extraPlugins.push(new NamedLazyChunksWebpackPlugin());
   }
 
   return {
@@ -114,6 +121,8 @@ export function getCommonConfig(wco: WebpackConfigOptions) {
     ].concat(extraPlugins),
     node: {
       fs: 'empty',
+      // `global` should be kept true, removing it resulted in a
+      // massive size increase with Build Optimizer on AIO.
       global: true,
       crypto: 'empty',
       tls: 'empty',
