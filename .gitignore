@@ -3,6 +3,7 @@ node_modules/
 npm-debug.log*
 yarn-error.log*
 
+
 # IDEs
 .idea/
 jsconfig.json
@@ -17,3 +18,5 @@ tmp/
 # Mac OSX Finder files.
 **/.DS_Store
 .DS_Store
+
+#forlock file
