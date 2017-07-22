@@ -71,6 +71,9 @@ export default Task.extend({
       serveTaskOptions.publicHost = clientUrl.host;
       clientAddress = url.format(clientUrl);
     }
+    console.log('process.env.NODE_ENV = ', process.env.NODE_ENV);
+
+
 
     if (serveTaskOptions.liveReload) {
       // This allows for live reload of page when changes are made to repo.
@@ -122,6 +125,7 @@ export default Task.extend({
         }
       });
     }
+    //開始執行webpack
 
     webpackCompiler = webpack(webpackConfig);
 
@@ -222,11 +226,11 @@ export default Task.extend({
         }
       });
     })
-    .catch((err: Error) => {
-      if (err) {
-        this.ui.writeError('\nAn error occured during the build:\n' + ((err && err.stack) || err));
-      }
-      throw err;
-    });
+      .catch((err: Error) => {
+        if (err) {
+          this.ui.writeError('\nAn error occured during the build:\n' + ((err && err.stack) || err));
+        }
+        throw err;
+      });
   }
 });

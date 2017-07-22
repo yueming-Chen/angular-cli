@@ -86,6 +86,7 @@ export function getCommonConfig(wco: WebpackConfigOptions) {
     extraPlugins.push(new NamedLazyChunksWebpackPlugin());
   }
 
+  console.log('add common HtmlWebpackPlugin');
   return {
     resolve: {
       extensions: ['.ts', '.js'],

@@ -7,7 +7,7 @@ import { packageChunkSort } from '../../utilities/package-chunk-sort';
 import { BaseHrefWebpackPlugin } from '../../lib/base-href-webpack';
 import { extraEntryParser, lazyChunksFilter } from './utils';
 import { WebpackConfigOptions } from '../webpack-config';
-
+import { DefinePlugin } from 'webpack'
 
 export function getBrowserConfig(wco: WebpackConfigOptions) {
   const { projectRoot, buildOptions, appConfig } = wco;
@@ -35,9 +35,9 @@ export function getBrowserConfig(wco: WebpackConfigOptions) {
       chunks: ['main'],
       minChunks: (module: any) => {
         return module.resource
-            && (   module.resource.startsWith(nodeModules)
-                || module.resource.startsWith(genDirNodeModules)
-                || module.resource.startsWith(realNodeModules));
+          && (module.resource.startsWith(nodeModules)
+            || module.resource.startsWith(genDirNodeModules)
+            || module.resource.startsWith(realNodeModules));
       }
     }));
   }
@@ -59,7 +59,7 @@ export function getBrowserConfig(wco: WebpackConfigOptions) {
       minChunks: 2
     }));
   }
-
+  console.log(`inject process.env.NODE_ENV ${process.env.NODE_ENV}`);
   return {
     plugins: [
       new HtmlWebpackPlugin({
@@ -80,7 +80,12 @@ export function getBrowserConfig(wco: WebpackConfigOptions) {
       new webpack.optimize.CommonsChunkPlugin({
         minChunks: Infinity,
         name: 'inline'
-      })
+      }),
+      new DefinePlugin({
+        "process.env": {
+          'NODE_ENV': `"${process.env.NODE_ENV}"`
+        }
+      }),
     ].concat(extraPlugins)
   };
 }

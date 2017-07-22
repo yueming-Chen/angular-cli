@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { stripIndent } from 'common-tags';
-import {AotPlugin} from '@ngtools/webpack';
+import { AotPlugin } from '@ngtools/webpack';
 import { WebpackConfigOptions } from '../webpack-config';
 
 const SilentError = require('silent-error');
@@ -64,28 +64,30 @@ function _createAotPlugin(wco: WebpackConfigOptions, options: any) {
   }
 
   return new AotPlugin(Object.assign({}, {
-      mainPath: path.join(projectRoot, appConfig.root, appConfig.main),
-      i18nFile: buildOptions.i18nFile,
-      i18nFormat: buildOptions.i18nFormat,
-      locale: buildOptions.locale,
-      replaceExport: appConfig.platform === 'server',
-      hostReplacementPaths,
-      // If we don't explicitely list excludes, it will default to `['**/*.spec.ts']`.
-      exclude: []
-    }, options));
+    mainPath: path.join(projectRoot, appConfig.root, appConfig.main),
+    i18nFile: buildOptions.i18nFile,
+    i18nFormat: buildOptions.i18nFormat,
+    locale: buildOptions.locale,
+    replaceExport: appConfig.platform === 'server',
+    hostReplacementPaths,
+    // If we don't explicitely list excludes, it will default to `['**/*.spec.ts']`.
+    exclude: []
+  }, options));
 }
 
-export const getNonAotConfig = function(wco: WebpackConfigOptions) {
+export const getNonAotConfig = function (wco: WebpackConfigOptions) {
   const { appConfig, projectRoot } = wco;
   const tsConfigPath = path.resolve(projectRoot, appConfig.root, appConfig.tsconfig);
 
   return {
     module: { rules: [{ test: /\.ts$/, loader: webpackLoader }] },
-    plugins: [ _createAotPlugin(wco, { tsConfigPath, skipCodeGeneration: true }) ]
+    plugins: [
+      _createAotPlugin(wco, { tsConfigPath, skipCodeGeneration: true })
+    ]
   };
 };
 
-export const getAotConfig = function(wco: WebpackConfigOptions) {
+export const getAotConfig = function (wco: WebpackConfigOptions) {
   const { projectRoot, buildOptions, appConfig } = wco;
   const tsConfigPath = path.resolve(projectRoot, appConfig.root, appConfig.tsconfig);
   const testTsConfigPath = path.resolve(projectRoot, appConfig.root, appConfig.testTsconfig);
@@ -94,7 +96,7 @@ export const getAotConfig = function(wco: WebpackConfigOptions) {
 
   // Fallback to exclude spec files from AoT compilation on projects using a shared tsconfig.
   if (testTsConfigPath === tsConfigPath) {
-    let exclude = [ '**/*.spec.ts' ];
+    let exclude = ['**/*.spec.ts'];
     if (appConfig.test) { exclude.push(path.join(projectRoot, appConfig.root, appConfig.test)); }
     pluginOptions.exclude = exclude;
   }
@@ -109,11 +111,11 @@ export const getAotConfig = function(wco: WebpackConfigOptions) {
 
   return {
     module: { rules: [{ test: /\.ts$/, use: [...boLoader, webpackLoader] }] },
-    plugins: [ _createAotPlugin(wco, pluginOptions) ]
+    plugins: [_createAotPlugin(wco, pluginOptions)]
   };
 };
 
-export const getNonAotTestConfig = function(wco: WebpackConfigOptions) {
+export const getNonAotTestConfig = function (wco: WebpackConfigOptions) {
   const { projectRoot, appConfig } = wco;
   const tsConfigPath = path.resolve(projectRoot, appConfig.root, appConfig.testTsconfig);
   const appTsConfigPath = path.resolve(projectRoot, appConfig.root, appConfig.tsconfig);
@@ -127,6 +129,6 @@ export const getNonAotTestConfig = function(wco: WebpackConfigOptions) {
 
   return {
     module: { rules: [{ test: /\.ts$/, loader: webpackLoader }] },
-    plugins: [ _createAotPlugin(wco, pluginOptions) ]
+    plugins: [_createAotPlugin(wco, pluginOptions)]
   };
 };
