@@ -37,6 +37,7 @@ export class NgCliWebpackConfig {
     this.wco = { projectRoot, buildOptions, appConfig };
   }
 
+  // 建立webpack.config.js
   public buildConfig() {
     const platformConfig = this.wco.appConfig.platform === 'server' ?
       getServerConfig(this.wco) : getBrowserConfig(this.wco);
@@ -112,7 +113,6 @@ export class NgCliWebpackConfig {
       deployUrl: appConfig.deployUrl,
       baseHref: appConfig.baseHref
     };
-
     return Object.assign({}, mergeableOptions, buildOptions);
   }
 

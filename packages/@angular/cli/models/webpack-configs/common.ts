@@ -85,8 +85,7 @@ export function getCommonConfig(wco: WebpackConfigOptions) {
   if (buildOptions.namedChunks) {
     extraPlugins.push(new NamedLazyChunksWebpackPlugin());
   }
-
-  console.log('add common HtmlWebpackPlugin');
+  // 設定webpack資訊
   return {
     resolve: {
       extensions: ['.ts', '.js'],

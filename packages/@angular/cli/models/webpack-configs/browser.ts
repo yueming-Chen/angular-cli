@@ -87,5 +87,9 @@ export function getBrowserConfig(wco: WebpackConfigOptions) {
         }
       }),
     ].concat(extraPlugins)
+    ,
+    externals: {
+      moment: true
+    }
   };
 }
