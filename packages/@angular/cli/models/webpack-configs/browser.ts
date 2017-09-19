@@ -101,6 +101,6 @@ export function getBrowserConfig(wco: WebpackConfigOptions) {
       'rxjs': 'Rx',
       'numeral': 'numeral',
 
-    },]
+    }]
   };
 }
