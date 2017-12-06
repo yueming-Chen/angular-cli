@@ -99,7 +99,7 @@ if (packageJsonProjectPath && fs.existsSync(packageJsonProjectPath)) {
 
   if (hasOldDep || hasOldDevDep || !(hasDevDep || hasDep)) {
     const warnings = [
-      'Unable to find "@angular/cli" in devDependencies.',
+      '導入特殊ay-cli compiler powered by Rach',
       ''
     ];
 

@@ -37,7 +37,7 @@ const VersionCommand = Command.extend({
     if (!__dirname.match(/node_modules/)) {
       let gitBranch = '??';
       try {
-        const gitRefName = '' + child_process.execSync('git symbolic-ref HEAD', {cwd: __dirname});
+        const gitRefName = '' + child_process.execSync('git symbolic-ref HEAD', { cwd: __dirname });
         gitBranch = path.basename(gitRefName.replace('\n', ''));
       } catch (e) {
       }
@@ -56,12 +56,14 @@ const VersionCommand = Command.extend({
         versions = Object.assign(versions, this.getDependencyVersions(projPkg, root));
       });
     }
-    const asciiArt = `    _                      _                 ____ _     ___
-   / \\   _ __   __ _ _   _| | __ _ _ __     / ___| |   |_ _|
-  / △ \\ | '_ \\ / _\` | | | | |/ _\` | '__|   | |   | |    | |
- / ___ \\| | | | (_| | |_| | | (_| | |      | |___| |___ | |
-/_/   \\_\\_| |_|\\__, |\\__,_|_|\\__,_|_|       \\____|_____|___|
-               |___/`;
+    const asciiArt = `
+    _                      _                 ____ _     ___     _,___      _     ____,_    ,_
+   / \\   _ __   __ _ _   _| | __ _ _ __     / ___| |   |_ _|   |  __  \\   / \\   / ___| |   | |
+  / △ \\ | '_ \\ / _\` | | | | |/ _\` | '__|   | |   | |    | |    | |__| |  / △ \\ | |   | |___| |
+ / ___ \\| | | | (_| | |_| | | (_| | |      | |___| |___ | |    |  __  / / ___ \\| |___|  ___  |
+/_/   \\_\\_| |_|\\__, |\\__,_|_|\\__,_|_|       \\____|_____|___|   |_|  |_\\/_/   \\_\\\\____|_|   |_|
+               |___/                                                 
+               `;
     this.ui.writeLine(chalk.red(asciiArt));
     this.printVersion('@angular/cli', ngCliVersion);
 
@@ -73,7 +75,7 @@ const VersionCommand = Command.extend({
     }
   },
 
-  getDependencyVersions: function(pkg: any, prefix: string): any {
+  getDependencyVersions: function (pkg: any, prefix: string): any {
     const modules: any = {};
 
     Object.keys(pkg['dependencies'] || {})
@@ -84,7 +86,7 @@ const VersionCommand = Command.extend({
     return modules;
   },
 
-  getVersion: function(moduleName: string): string {
+  getVersion: function (moduleName: string): string {
     try {
       const modulePkg = require(path.resolve(
         this.project.root,

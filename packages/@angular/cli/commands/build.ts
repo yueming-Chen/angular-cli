@@ -12,6 +12,7 @@ const buildConfigDefaults = config.getPaths('defaults.build', [
   'showCircularDependencies', 'commonChunk', 'namedChunks'
 ]);
 
+// 開始寫一些東西
 // defaults for BuildOptions
 export const baseBuildCommandOptions: any = [
   {
@@ -165,7 +166,7 @@ export const baseBuildCommandOptions: any = [
     default: false,
     aliases: ['bo'],
     description: '(Experimental) Enables @angular-devkit/build-optimizer '
-    + 'optimizations when using `--aot`.'
+      + 'optimizations when using `--aot`.'
   },
   {
     name: 'named-chunks',
@@ -182,7 +183,7 @@ export interface BuildTaskOptions extends BuildOptions {
 
 const BuildCommand = Command.extend({
   name: 'build',
-  description: 'Builds your app and places it into the output path (dist/ by default).',
+  description: '與傑有夠6Builds your app and places it into the output path (dist/ by default).',
   aliases: ['b'],
 
   availableOptions: baseBuildCommandOptions.concat([
